@@ -4,7 +4,7 @@ import json
 
 # --- Page Configuration ---
 st.set_page_config(
-    page_title="Customer Churn Prediction",
+    page_title="Customer Churn Prediction updated",
     page_icon="🤖",
     layout="centered",
     initial_sidebar_state="expanded"
