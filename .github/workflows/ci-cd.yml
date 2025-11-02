@@ -1,0 +1,65 @@
+name: CI-CD Pipeline for Churn Prediction App
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
+
+jobs:
+  # Job 1: Build and Push Docker images to ECR
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    env:
+      AWS_REGION: ap-south-1 # <-- CHANGE THIS
+      AWS_ACCOUNT_ID: 638325786362 # <-- CHANGE THIS
+      ECR_REPOSITORY_API: churn-prediction-api
+      ECR_REPOSITORY_UI: churn-prediction-ui
+      IMAGE_TAG: latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push API image to ECR
+        run: |
+          docker build -t ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY_API }}:${{ env.IMAGE_TAG }} -f app/api/Dockerfile .
+          docker push ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY_API }}:${{ env.IMAGE_TAG }}
+        
+      - name: Build, tag, and push UI image to ECR
+        run: |
+          docker build -t ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY_UI }}:${{ env.IMAGE_TAG }} -f app/ui/Dockerfile .
+          docker push ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY_UI }}:${{ env.IMAGE_TAG }}
+
+  # Job 2: Deploy to EC2 after images are pushed
+  deploy-to-ec2:
+    needs: build-and-push # This ensures this job only runs if the first one succeeds
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Deploy to EC2 instance
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} '
+            cd /home/ubuntu &&
+            aws ecr get-login-password --region YOUR_AWS_REGION | docker login --username AWS --password-stdin YOUR_AWS_ACCOUNT_ID.dkr.ecr.YOUR_AWS_REGION.amazonaws.com &&
+            docker-compose pull &&
+            docker-compose up -d
+          '
