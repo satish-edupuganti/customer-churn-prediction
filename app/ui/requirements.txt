@@ -1,0 +1,4 @@
+# UI-specific dependencies
+streamlit
+requests
+pandas

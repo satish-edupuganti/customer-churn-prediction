@@ -1,0 +1,6 @@
+# API-specific dependencies
+pandas
+scikit-learn
+joblib
+fastapi
+uvicorn

@@ -1,0 +1,17 @@
+# --- Core ML & Data ---
+# We need pandas for data manipulation and scikit-learn for the model pipeline.
+# Pinning the scikit-learn version is good practice as model files (.joblib)
+# can be sensitive to version changes.
+pandas
+scikit-learn==1.3.2
+joblib
+
+# --- API Service (Backend) ---
+# FastAPI is our web framework, and Uvicorn is the server that runs it.
+fastapi
+uvicorn
+
+# --- UI Service (Frontend) ---
+# Streamlit for the UI and requests to communicate with our API.
+streamlit
+requests

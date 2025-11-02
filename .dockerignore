@@ -1,0 +1,24 @@
+# Ignore the Python virtual environment
+venv/
+/venv
+
+# Ignore Git directory
+.git/
+.gitignore
+
+# Ignore VSCode and other IDE settings
+.vscode/
+.idea/
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore data and notebooks - they are not needed to run the app
+data/
+notebooks/
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db

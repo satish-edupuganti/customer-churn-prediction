@@ -1,0 +1,33 @@
+customer-churn-prediction/
+├── .github/
+│   └── workflows/
+│       └── ci-cd.yml           # For GitHub Actions CI/CD pipeline
+├── app/
+│   ├── api/
+│   │   ├── Dockerfile          # Instructions to containerize the FastAPI app
+│   │   └── main.py             # The FastAPI application code
+│   └── ui/
+│       └── app.py              # The Streamlit UI application code
+├── artifacts/
+│   └── .gitkeep                # To store trained models, scalers, encoders
+├── data/
+│   ├── raw/
+│   │   └── .gitkeep            # For the original, untouched dataset
+│   └── processed/
+│       └── .gitkeep            # For cleaned and preprocessed data
+├── notebooks/
+│   └── 1-exploratory-data-analysis.ipynb # Jupyter notebook for EDA
+├── src/
+│   └── churn_predictor/
+│       ├── __init__.py         # Makes 'churn_predictor' a Python package
+│       ├── config.py           # For storing constants and configuration
+│       ├── pipeline.py         # To orchestrate the full ML pipeline
+│       ├── preprocess.py       # Data cleaning and feature engineering functions
+│       └── train.py            # Model training and evaluation code
+├── tests/                      # For our unit and integration tests
+│   ├── __init__.py
+│   └── test_pipeline.py
+├── .gitignore                  # To specify which files Git should ignore
+├── README.md                   # Project documentation
+├── requirements.txt            # List of Python libraries needed for the project
+└── venv/                       # The virtual environment folder (if you created it)
