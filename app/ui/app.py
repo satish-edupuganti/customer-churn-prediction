@@ -11,7 +11,7 @@ st.set_page_config(
 )
 
 # --- App Title ---
-st.title("Customer Churn Prediction 🤖")
+st.title("Customer Churn Prediction updated here🤖")
 st.write("Enter customer details to predict whether they will churn or not.")
 st.write("This UI sends a request to a FastAPI backend for prediction.")
 
